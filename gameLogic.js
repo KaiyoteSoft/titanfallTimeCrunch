@@ -3,79 +3,6 @@ var height = 600;
 
 var game = new Phaser.Game(width,height,Phaser.AUTO,'', {preload: preload, create: create, update: update});
 
-var Bullet = function (game,key) {
-	Phaser.Sprite.call(this, game, 0, 0, key);
-	this.texture.baseTexture.scaleMode = 
-	PIXI.scaleModes.NEAREST;
-	this.anchor.set(0.5);
-	this.checkWorldBounds=true;
-	this.outOfBoundsKill=true;
-	this.exists = false;
-
-	this.tracking=false;
-	this.scaleSpeed=0;
-}
-
-Bullet.prototype = Object.create(Phaser.Sprite.prototype);
-Bullet.prototype.constructor = Bullet; 
-
-Bullet.prototype.fire = function (x,y,angle,speed,gx,gy) {
-	gx=gx||0;
-	gy=gy||0;
-	this.reset(x,y);
-	this.scale.set(1)
-
-	this.game.physics.arcade.velocityFromAngle(angle, speed, 
-		this.body.velocity);
-
-	this.angle = angle;
-	this.body.gravity.set(gx,gy);
-}
-
-Bullet.prototype.update = function () {
-	if (this.tracking) {
-		this.rotation = Math.atan2(this.body.velocity.y, 
-			this.body.velocity.x);
-	}
-	if (this.scaleSpeed > 0) {
-		this.scale.x+= this.scaleSpeed;
-		this.scale.y += this.scaleSpeed;
-	}
-};
-
-var Weapon={}
-
-Weapon.SingleBullet = function (game) {
-
-    Phaser.Group.call(this, game, game.world, 'Single Bullet', false, true, Phaser.Physics.ARCADE);
-
-    this.nextFire = 0;
-    this.bulletSpeed = 600;
-    this.fireRate = 100;
-
-    for (var i = 0; i < 64; i++)
-    {
-        this.add(new Bullet(game, 'bullet5'), true);
-    }
-
-    return this;
-
-};
-
-
-Weapon.SingleBullet.prototype = Object.create(Phaser.Group.prototype);
-Weapon.SingleBullet.prototype.constructor = Weapon.SingleBullet;
-
-Weapon.SingleBullet.prototype.fire = function (source) {
-	if (this.game.time.time < this.nextFire) {
-		return;
-	}
-	var x = source.x+10
-	var y = source.y+10;
-	this.getFirstExists(false).fire(x,y,0,this.bulletSpeed, 0,0);
-	this.nextFire = this.game.time.time + this.fireRate;
-};
-
 //Create list of variables needed for the game
 var player;
 var food;
@@ -85,9 +12,15 @@ var bottomKey;
 var leftKey;
 var rightKey;
 var space;
-var weapons = []
+var shootingTimer;
+var bulletTrigger = true;
+var mouseX;
+var mouseY;
+var primaryCrosshair;
+var speedTrigger = true;	
 
 var speed = 175;
+var bulletSpeed = 300;
 var score = 0;
 var scoreText;
 
@@ -96,11 +29,10 @@ function preload() {
 	game.load.image('player', 'asset/blue-square.png');
 	game.load.image('food', 'asset/red-square.png');
 	game.load.image('bullet', 'asset/bullet5.png')
+	game.load.image('crosshair', 'asset/red-square.png');
 }
 
 function create() {
-//Ads weapons
-	weapons.push(new Weapon.SingleBullet(this.game));
 	space = game.input.keyboard.addKey([Phaser.Keyboard.
 		SPACEBAR]);
 
@@ -109,6 +41,7 @@ function create() {
 	cursors=game.input.keyboard.createCursorKeys();
 //create wasd controls for plability
 	topKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+	// topKey = game.input.keyboard.addKeyCapture(Phaser.KeyCode.W);
 	bottomKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
 	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -120,6 +53,10 @@ function create() {
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 	//Have the player collide with the bounds of the world
 	player.body.collideWorldBounds=true;
+
+//Create the crosshair, additional requirements in
+//external function
+	primaryCrosshair = createCrosshair(width*0.5, height*0.3);
 
 	food = game.add.group();
 	food.create(width*0.1, height*0.1, 'food');
@@ -133,6 +70,11 @@ function create() {
 
 	scoreText = game.add.text(5,3, score);
 	this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
+
+//Adds weapons
+	initBullets();
+	// shootingTimer = game.time.events.loop(Phaser.Timer.SECOND/5,
+	// 	createPlayerBullets);
 }
 
 function update() {
@@ -159,14 +101,89 @@ function update() {
 		player.body.velocity.x = 0;
 	}
 
-	// if (space.isDown) {
-	// 	this.weapons[this.currentWeapon].fire(player);
-	// }
+	if (game.input.activePointer.isDown && bulletTrigger==true) {
+		console.log("pressed");
+		initBullets();
+		createPlayerBullets();
+		bulletTrigger = false;
+	}
+	else if (game.input.activePointer.isUp) {
+		bulletTrigger = true;
+	}
+	else {
+		//Placeholder
+	}
+
+	if (space.isDown && speedTrigger==true) {
+		speed = 600;
+		console.log("speed");
+		speedTrigger = false;
+	}
+	else if (space.isUp) {
+		speed = 175;
+		speedTrigger = true;
+	}
+	else {
+		//placeholder
+	}
+
+	mouseX = game.input.x;
+	mouseY = game.input.y;
+	// console.log(mouseX, mouseY);
+	controlAiming(primaryCrosshair, mouseX, mouseY);
+
 	game.physics.arcade.overlap(player,food,eatFood);
 }
+
+//various functions for controlling the game
+function createCrosshair(x,y) {
+	var crosshair = game.add.sprite(x,y,"crosshair");
+	crosshair.anchor.setTo(0.5,0.5);
+	game.physics.arcade.enable(crosshair);
+	crosshair.body.collideWorldBounds = true;
+	return crosshair;
+}
+
+function controlAiming(crosshair, x, y){
+	crosshair.x = x;
+	crosshair.y = y;
+	if(crosshair.x<crosshair.width/2){
+		crosshair.x = crosshair.width/2;
+	}
+	else if (crosshair.x > game.world.width - crosshair.width/2){
+		crosshair.x = game.world.width - crosshair.width / 2;
+	}
+
+	if(crosshair.y<crosshair.height/2){
+		crosshair.y = crosshair.height/2;
+	}
+	else if (crosshair.y > game.world.height - crosshair.height/2){
+		crosshair.y = game.world.height - crosshair.height / 2;
+	}
+};
+
+function initBullets() {
+	playerBullets = game.add.group();
+	playerBullets.enableBody = true;
+};
+
+function createPlayerBullets() {
+	var bullet = playerBullets.getFirstExists(false);
+	if (!bullet) {
+		bullet = new titanfallTimeCrunch.PlayerBullet(game, player.x,
+			player.top)
+		playerBullets.add(bullet);
+	}
+	else {
+		// reseting the position of the bullet
+		bullet.reset(player.x, player.top);
+	}
+	// bullet.body.velocity.y = bulletSpeed;
+	game.physics.arcade.moveToPointer(bullet, bulletSpeed);
+};
 
 function eatFood(player,food) {
 	food.kill()
 	score = score + 1;
 	scoreText.text = score;
-}
+};
