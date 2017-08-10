@@ -1,4 +1,4 @@
-var enemy;
+// var enemy;
 var dangerBullets
 function enemyShooter(index, game, player, enemyBullets) {
 	var x = game.world.randomX;
@@ -7,6 +7,7 @@ function enemyShooter(index, game, player, enemyBullets) {
 	this.fireRate = 2000;
 	this.nextFire = 0;
 	this.alive = true;
+	this.health = 1;
 
 	this.enemy = game.add.sprite(x,y,'shooter');
 	this.enemy.anchor.set(0.5);
@@ -15,6 +16,19 @@ function enemyShooter(index, game, player, enemyBullets) {
 	this.enemy.body.immovable = false;
 	this.enemy.body.collideWorldBounds=true;
 	this.enemy.body.bounce.setTo(1,1);
+
+	this.enemy.angle = game.rnd.angle();
+	game.physics.arcade.velocityFromRotation(this.enemy.rotation, 100, this.enemy.body.velocity)
+}
+
+enemyShooter.prototype.damage = function() {
+	this.health -= 1;
+	if (this.health <= 0) {
+		this.alive=false;
+		this.enemy.kill();
+		return true;
+	}
+	return false;
 }
 
 enemyShooter.prototype.update = function() {

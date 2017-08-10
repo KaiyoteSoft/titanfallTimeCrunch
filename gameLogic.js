@@ -15,10 +15,10 @@ var enemiesTotal = 0;
 var enemiesAlive = 0;
 
 var type;
+var swarm;
 var movementTrigger = false;
 var enemyTimer=2;
 var food;
-var shooter; 
 var opponent;
 var livingEnemies;
 var cursors;
@@ -94,12 +94,12 @@ function create() {
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
 
-// Adds the enemy shooter
-	shooter = game.add.group();
-	shooter.enableBody = true;
-	shooter.physicsBodyType = Phaser.Physics.ARCADE;
-	shooter.createMultiple(10, 'shooter');
-	shooter.setAll('checkWorldBounds', true);
+// Adds the enemy swarm
+	food = game.add.group();
+	food.enableBody = true;
+    food.physicsBodyType = Phaser.Physics.ARCADE;
+    food.createMultiple(10, 'food');
+    food.setAll('checkWorldBounds', true)
 
 //Adds the enemy weapons 
 	enemyBullets = game.add.group();
@@ -113,15 +113,15 @@ function create() {
 
 //code for adding shooters controlled by prototype
 	enemies = [];
-	enemiesTotal = 5;
-	enemiesAlive = 5;
+	enemiesTotal = 2;
+	enemiesAlive = 2;
 	for (var i=0; i<enemiesTotal; i++) {
 		enemies.push(new enemyShooter(i, game, player, enemyBullets));
 	}
 
 //Start the timer to add enemies 
-// createShooter();
-// game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
+	// createShooter();
+	game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 
 }
 
@@ -132,8 +132,11 @@ function generateEnemies() {
 		createSwarm(); 
 	};
 	if (type==1) {
-		createShooter();
-		// movementTrigger = true;
+		enemiesTotal=4
+		for (var i=2; i<enemiesTotal; i++) {
+			enemies.push(new enemyShooter(i, game, player, enemyBullets));
+		}
+		type=3;
 	}
 	if (type==2) {
 		createSwarm();
@@ -143,47 +146,36 @@ function generateEnemies() {
 
 }
 
-function createShooter() {
-	opponent = shooter.getFirstDead();
-    opponent.reset(300, 50);
-    var tween = game.add.tween(opponent).to( { x: 400 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-}
-
 function createSwarm() {
-	food = game.add.group();
-	food.enableBody = true;
-    food.physicsBodyType = Phaser.Physics.ARCADE;
-
-    for (var y = 0; y < 3; y++)
-    {
-        for (var x = 0; x < 5; x++)
-        {
-            var enemy = food.create(x * 40, y * 42, 'food');
-            enemy.anchor.setTo(0.5, 0.5);
-        }
-    }
-
+    // for (var y = 0; y < 3; y++)
+    // {
+    //     for (var x = 0; x < 5; x++)
+    //     {
+    //         var enemy = food.create(x * 40, y * 42, 'food');
+    //         enemy.anchor.setTo(0.5, 0.5);
+    //     }
+    // }
     var xPos = Math.floor(Math.random() * 800);
-    food.x = xPos;
-    food.y = 50;
+    swarm = food.getFirstDead();
+    swarm.reset(0, 50);
 }
 
 
 function descend(playerx, playery) {
-	var x = playerx;
-	var y = playery;
-	var centerx = food.x + 100;
-	var centery = food.y + 60;
-	if (centerx < x) {
+	var x = playerx - player.width/2;
+	var y = playery - player.height/2;
+	if (x >= food.x) {
 		food.x += enemySpeed;
+		// console.log(x,food.x);
 	};
-	if (centerx > x) {
+	if (x < food.x) {
 		food.x -=enemySpeed;
 	}
-	if (centery < y) {
+	if (y >= food.x) {
 		food.y += enemySpeed;
+		// console.log(y,food.y);
 	}
-	if (centery > y) {
+	if (y < food.y) {
 		food.y -= enemySpeed;
 	}
 
@@ -251,14 +243,6 @@ function update() {
 		//placeholder
 	}
 
-
-//timer for the enemy firing
-	if (game.time.now > firingTimer && typeof opponent !== "undefined") {
-		// var randNum = Math.floor(Math.random() * 4);
-		// console.log(randNum);
-		enemyFires();
-	}
-
 //Updates the crosshair and the swarm movement
 	mouseX = game.input.x;
 	mouseY = game.input.y;
@@ -279,7 +263,7 @@ function update() {
         {
             enemiesAlive++;
             // game.physics.arcade.collide(player, enemies[i].tank);
-            // game.physics.arcade.overlap(bullets, enemies[i].tank, bulletHitEnemy, null, this);
+            game.physics.arcade.overlap(bullets, enemies[i].enemy, collisionHandler2, null, this);
             enemies[i].update();
         }
     }
@@ -287,7 +271,6 @@ function update() {
 	game.physics.arcade.overlap(player,food,eatFood);
 	game.physics.arcade.overlap(enemyBullets, player, endGame, null, this);
     game.physics.arcade.overlap(bullets, food, collisionHandler, null, this);
-    game.physics.arcade.overlap(bullets, shooter, collisionHandler2, null, this);
 }
 
 //various functions for controlling the game
@@ -337,22 +320,13 @@ function collisionHandler(bullets, enemy) {
     movementTrigger = false;
 }
 
-function collisionHandler2(bullets, shooter) {
+function collisionHandler2(enemy, bullets) {
     bullets.kill();
-    shooter.kill();
-    enemyBullets.removeAll();
-}
-
-
-function enemyFires() {
-	enemyBullet = enemyBullets.getFirstExists(false);
-
-	if (enemyBullet) {
-		enemyBullet.reset(opponent.body.x, opponent.body.y);
-		enemyBullet.rotation = game.physics.arcade.moveToObject(enemyBullet, player, 500);
-		game.physics.arcade.moveToObject(enemyBullet, player, 120);
-		firingTimer = game.time.now + 2000;
-	}
+    var destroyed = enemies[enemy.name].damage();
+    if (destroyed == true) {
+    	console.log("Dead")
+    }
+    // enemyBullets.removeAll();
 }
 
 function eatFood(player,food) {
