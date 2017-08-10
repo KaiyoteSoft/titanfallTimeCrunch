@@ -17,7 +17,7 @@ var enemiesAlive = 0;
 var type;
 var swarm;
 var movementTrigger = false;
-var enemyTimer=2;
+var enemyTimer=4;
 var food;
 var opponent;
 var livingEnemies;
@@ -99,6 +99,8 @@ function create() {
 	food.enableBody = true;
     food.physicsBodyType = Phaser.Physics.ARCADE;
     food.createMultiple(10, 'food');
+    food.setAll('anchor.x', 0.5);
+    food.setAll('anchor.y', 0.5);
     food.setAll('checkWorldBounds', true)
 
 //Adds the enemy weapons 
@@ -120,7 +122,7 @@ function create() {
 	}
 
 //Start the timer to add enemies 
-	// createShooter();
+	createSwarm();
 	game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 
 }
@@ -147,17 +149,19 @@ function generateEnemies() {
 }
 
 function createSwarm() {
-    // for (var y = 0; y < 3; y++)
-    // {
-    //     for (var x = 0; x < 5; x++)
-    //     {
-    //         var enemy = food.create(x * 40, y * 42, 'food');
-    //         enemy.anchor.setTo(0.5, 0.5);
-    //     }
-    // }
-    var xPos = Math.floor(Math.random() * 800);
-    swarm = food.getFirstDead();
-    swarm.reset(0, 50);
+    for (var y = 0; y < 3; y++)
+    {
+        for (var x = 0; x < 5; x++)
+        {
+            var enemy = food.create(x * 40, y * 42, 'food');
+            enemy.anchor.setTo(0.5, 0.5);
+        }
+    }
+    // if (food.countDead > 0){
+    // var xPos = Math.floor(Math.random() * 800);
+    // swarm = food.getFirstDead();
+    // swarm.reset(xPos, 50);
+	// };
 }
 
 
@@ -232,7 +236,7 @@ function update() {
 // makes the player go faster
 // if the shift is pressed
 	if (shift.isDown && speedTrigger==true) {
-		speed = 600;
+		speed = 500;
 		speedTrigger = false;
 	}
 	else if (shift.isUp) {
@@ -250,19 +254,18 @@ function update() {
 	
 	if (typeof food !== "undefined") {
 		descend(player.x, player.y);
+		// game.physics.arcade.moveToObject(food, player, enemySpeed);
+		// console.log(food.x, food.y)
 	};
 
 //check if the shooter group is alive 
 	enemiesAlive = 0;
-
     for (var i = 0; i < enemies.length; i++)
     {
-    	// console.log(enemies[i].alive);
-        // if (typeof enemies[i].alive =='undefined')
         if (enemies[i].alive)
         {
             enemiesAlive++;
-            // game.physics.arcade.collide(player, enemies[i].tank);
+            game.physics.arcade.collide(player, enemies[i].enemy);
             game.physics.arcade.overlap(bullets, enemies[i].enemy, collisionHandler2, null, this);
             enemies[i].update();
         }
@@ -341,5 +344,5 @@ function endGame(enemyBullets, player) {
 	player.kill();
 	scoreText.text = end;
 	bullets.removeAll();
-}
+};
 
