@@ -1,4 +1,17 @@
-// var enemy;
+
+function createEnemyBullets() {
+//Adds the enemy weapons 
+	enemyBullets = game.add.group();
+	enemyBullets.enableBody = true;
+	enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+	enemyBullets.createMultiple(100, 'altBullet');
+	enemyBullets.setAll('anchor.x', 0.5);
+	enemyBullets.setAll('anchor.y', 1);
+	enemyBullets.setAll('outOfBoundsKill', true);
+	enemyBullets.setAll('checkWorldBounds', true);
+};
+
+
 var dangerBullets
 function enemyShooter(index, game, player, enemyBullets) {
 	var x = game.world.randomX;
