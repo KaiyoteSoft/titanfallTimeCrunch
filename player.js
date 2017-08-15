@@ -6,7 +6,8 @@ function initPlayer() {
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 	//Have the player collide with the bounds of the world
 	player.body.collideWorldBounds=true;
-	player.health = 3;
+	player.body.allowRotation = false;
+	player.health = 10;
 };
 
 function createBullets() {
@@ -53,20 +54,26 @@ function fire() {
 
         bullet.reset(player.x - 8, player.y - 8);
 
-        game.physics.arcade.moveToPointer(bullet, bulletSpeed);
+		bullet.rotation = game.physics.arcade.moveToPointer(bullet, bulletSpeed);
     }
 }
 
 function Shield(index, game, player) {
+	var shieldTrigger = true;
 	this.alive = true;
 	this.health = 4;
 	
-	this.shield = game.add.sprite(player.x, player.y-35, 'shield');
+	this.shield = game.add.sprite(player.x, player.y, 'shield');
 	this.shield.anchor.set(0.5);
 	this.shield.name = index.toString();
 	game.physics.enable(this.shield, Phaser.Physics.ARCADE);
 	this.shield.body.immovable = false;
 	this.shield.body.collideWorldBounds = true;
+	this.shield.rotation = game.physics.arcade.angleToPointer(this.shield);
+	if (shieldTrigger==true) {
+		game.physics.arcade.moveToPointer(this.shield, 80);
+		shieldTrigger = false;
+	}
 }
 
 Shield.prototype.damage = function() {

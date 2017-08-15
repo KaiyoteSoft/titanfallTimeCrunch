@@ -45,6 +45,7 @@ enemyShooter.prototype.damage = function() {
 }
 
 enemyShooter.prototype.update = function() {
+	this.enemy.rotation = game.physics.arcade.angleBetween(this.enemy, player);
 	if (game.time.now > this.nextFire && dangerBullets.countDead() > 0) {
 		this.nextFire = game.time.now + this.fireRate;
 		var dangerBullet = dangerBullets.getFirstDead();

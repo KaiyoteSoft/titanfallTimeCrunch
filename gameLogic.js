@@ -10,16 +10,17 @@ var enemyBullets;
 var playerFireRate = 350;
 var playerNextFire = 0;
 var shieldGroup;
-var shieldTimer = 6;
+var shieldTimer = 4;
 
 var enemies;
 var enemiesTotal = 0;
-var enemiesAlive = 0;
+var enemiesInit = 0;
+var numEnemies = 3;
 
 var type;
 var swarm;
 var movementTrigger = false;
-var enemyTimer=4;
+var enemyTimer=6;
 var food;
 var opponent;
 var livingEnemies;
@@ -47,12 +48,12 @@ var score = 0;
 
 function preload() {
 	game.stage.backgroundColor = "#eee";
-	game.load.image('player', 'asset/blue-square.png');
+	game.load.image('crosshair', 'asset/crosshair.png');
+	game.load.image('player', 'asset/player.png');
 	game.load.image('food', 'asset/red-square.png');
-	game.load.image('bullet', 'asset/bullet6.png');
+	game.load.image('bullet', 'asset/bullet7.png');
 	game.load.image('altBullet', 'asset/bullet5.png');
-	game.load.image('crosshair', 'asset/red-square.png');
-	game.load.image('shooter', 'asset/green-square.png');
+	game.load.image('shooter', 'asset/enemy.png');
 	game.load.image('shield', 'asset/shield.png');
 }
 
@@ -81,6 +82,7 @@ initPlayer();
 
 	shieldText = game.add.text(150, 565, "Shield: Ready");
 	healthText = game.add.text(5, 565, "Health:" + player.health);
+	endText = game.add.text(350, 300, "");
 	scoreText = game.add.text(5,3, score);
 	this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
@@ -104,30 +106,46 @@ createEnemyBullets();
 
 //code for adding shooters controlled by prototype
 	enemies = [];
-	enemiesTotal = 2;
-	enemiesAlive = 2;
-	for (var i=0; i<enemiesTotal; i++) {
+	enemiesTotal = iterateEnemies(numEnemies);
+	for (var i=enemiesInit; i<enemiesTotal; i++) {
 		enemies.push(new enemyShooter(i, game, player, enemyBullets));
 	}
-
+	enemiesInit = enemiesInit + (enemiesTotal-enemiesInit);
+	enemiesTotal=enemiesInit+iterateEnemies(numEnemies);
 
 //Start the timer to add enemies 
-	createSwarm();
-	game.time.events.add(Phaser.Timer.SECOND*shieldTimer, generateEnemies);
+	// createSwarm();
+	game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
+}
 
+/////////////////////////////////////////////// Start of rest of code
+//////////////////////////////////////////////
+/////////////////////////////////////////////
+
+function iterateEnemies(number) {
+	var counter = Math.floor(Math.random() * number)+1;
+	return counter;
 }
 
 function generateEnemies() {
 	// var type = Math.floor(Math.random() * 3);
+	if (player.alive==true) {
+		if (enemyTimer >= 2) {
+			enemyTimer = enemyTimer-0.5;
+		}
+		console.log(enemyTimer);
+		game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
+	}
 	type = 1;
 	if (type==0) {
 		createSwarm(); 
 	};
 	if (type==1) {
-		enemiesTotal=4
-		for (var i=2; i<enemiesTotal; i++) {
+		for (var i=enemiesInit; i<enemiesTotal; i++) {
 			enemies.push(new enemyShooter(i, game, player, enemyBullets));
 		}
+		enemiesInit = enemiesInit + (enemiesTotal-enemiesInit);
+		enemiesTotal=enemiesInit+iterateEnemies(numEnemies);
 		type=3;
 	}
 	if (type==2) {
@@ -159,14 +177,12 @@ function descend(playerx, playery) {
 	var y = playery - player.height/2;
 	if (x >= food.x) {
 		food.x += enemySpeed;
-		// console.log(x,food.x);
 	};
 	if (x < food.x) {
 		food.x -=enemySpeed;
 	}
 	if (y >= food.x) {
 		food.y += enemySpeed;
-		// console.log(y,food.y);
 	}
 	if (y < food.y) {
 		food.y -= enemySpeed;
@@ -176,6 +192,11 @@ function descend(playerx, playery) {
 
 
 function update() {
+//Updates the crosshair and the swarm movement
+	mouseX = game.input.x;
+	mouseY = game.input.y;
+	controlAiming(primaryCrosshair, mouseX, mouseY);
+
 	//move the player up and down based on keyboard arrows
 	if (topKey.isDown || cursors.up.isDown) {
 		player.body.velocity.y = -speed;
@@ -196,11 +217,11 @@ function update() {
 	else {
 		player.body.velocity.x = 0;
 	}
+// rotate the player towards the pointer
+	player.rotation = game.physics.arcade.angleToPointer(player);
 
 // fires the bullet (semi-automatic) if the mouse is clicked
 	if (game.input.activePointer.isDown && bulletTrigger==true) {
-		// console.log("pressed");
-		// enemyFires();
 		bulletTrigger = false;
 	}
 	else if (game.input.activePointer.isUp) {
@@ -222,15 +243,14 @@ function update() {
 		//Placeholder
 	}
 
-// makes the player go faster
-// if the shift is pressed
+//adds shield if shift is pressed
 	if (shift.isDown && speedTrigger==true && shieldGroup.length == 0) {
-//add shield
 		for (i=0;i<1;i++) {
 			shieldGroup.push(new Shield(i, game, player))
-			game.time.events.add(Phaser.Timer.SECOND*enemyTimer, killShield);
+			game.time.events.add(Phaser.Timer.SECOND*shieldTimer, killShield);
 
 		}
+	
 		shieldText.text = "Shield: Deployed";
 		speedTrigger = false;
 	}
@@ -241,23 +261,16 @@ function update() {
 	else {
 		//placeholder
 	}
-
-//Updates the crosshair and the swarm movement
-	mouseX = game.input.x;
-	mouseY = game.input.y;
-	controlAiming(primaryCrosshair, mouseX, mouseY);
 	
 	if (typeof food !== "undefined") {
 		descend(player.x, player.y);
 	};
 
 //check if the shooter group is alive 
-	enemiesAlive = 0;
     for (var i = 0; i < enemies.length; i++)
     {
         if (enemies[i].alive)
         {
-            enemiesAlive++;
             game.physics.arcade.collide(player, enemies[i].enemy);
             game.physics.arcade.overlap(bullets, enemies[i].enemy, collisionHandler2, null, this);
             enemies[i].update();
@@ -272,7 +285,6 @@ function update() {
 	game.physics.arcade.overlap(player,food,eatFood);
 	game.physics.arcade.overlap(enemyBullets, player, endGame, null, this);
     game.physics.arcade.overlap(bullets, food, collisionHandler, null, this);
-    // console.log(shield.health);
 }
 
 //various functions for controlling the game
@@ -286,7 +298,8 @@ function collisionHandler2(enemy, bullets) {
     bullets.kill();
     var destroyed = enemies[enemy.name].damage();
     if (destroyed == true) {
-    	console.log("Dead")
+    	score = score+1;
+    	scoreText.text = score;
     }
     // enemyBullets.removeAll();
 }
@@ -302,12 +315,6 @@ function damageShield(shield, enemyBullets) {
 }
 
 function killShield() {
- //    for (var i=0;i<shieldGroup.length;i++) {
-	//     if (shieldGroup[i].alive) {
-	// 		game.physics.arcade.overlap(enemyBullets, shieldGroup[i].shield, damageShield, null, this);
-	//     }
-	// }
-
 	for (var i=0;i<shieldGroup.length;i++) {
 		if (shieldGroup[i].alive) {
 			killShield2(shieldGroup[i].shield);
@@ -327,8 +334,7 @@ function eatFood(player,food) {
 	player.health = 0;
 	healthText.text = "Health: "+player.health;
 	player.kill()
-	score = score + 1;
-	scoreText.text = end;
+	endText.text = end;
 	bullets.removeAll();
 };
 
@@ -338,7 +344,7 @@ function endGame(player, enemyBullets) {
 	healthText.text = "Health: "+player.health;
 	if (player.health <=0) {
 		player.kill();
-		scoreText.text = end;
+		endText.text = end;
 		bullets.removeAll();
 	}
 };
