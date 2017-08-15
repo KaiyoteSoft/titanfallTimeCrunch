@@ -19,6 +19,10 @@ var numEnemies = 3;
 
 var type;
 var swarm;
+var swarmGroup;
+var swarmInit = 0;
+var swarmTotal = 2;
+
 var movementTrigger = false;
 var enemyTimer=6;
 var food;
@@ -50,7 +54,7 @@ function preload() {
 	game.stage.backgroundColor = "#eee";
 	game.load.image('crosshair', 'asset/crosshair.png');
 	game.load.image('player', 'asset/player.png');
-	game.load.image('food', 'asset/red-square.png');
+	game.load.image('food', 'asset/zombie.png');
 	game.load.image('bullet', 'asset/bullet7.png');
 	game.load.image('altBullet', 'asset/bullet5.png');
 	game.load.image('shooter', 'asset/enemy.png');
@@ -90,16 +94,7 @@ initPlayer();
 	createBullets();
 //Initialize the shield
 	shieldGroup = [];
-
-
-// Adds the enemy swarm
-	food = game.add.group();
-	food.enableBody = true;
-    food.physicsBodyType = Phaser.Physics.ARCADE;
-    food.createMultiple(10, 'food');
-    food.setAll('anchor.x', 0.5);
-    food.setAll('anchor.y', 0.5);
-    food.setAll('checkWorldBounds', true)
+//Create the swarm group
 
 // Creates enemy bullets (code found in other .js file)
 createEnemyBullets();
@@ -107,14 +102,12 @@ createEnemyBullets();
 //code for adding shooters controlled by prototype
 	enemies = [];
 	enemiesTotal = iterateEnemies(numEnemies);
-	for (var i=enemiesInit; i<enemiesTotal; i++) {
-		enemies.push(new enemyShooter(i, game, player, enemyBullets));
-	}
-	enemiesInit = enemiesInit + (enemiesTotal-enemiesInit);
-	enemiesTotal=enemiesInit+iterateEnemies(numEnemies);
+	initShooter();
 
 //Start the timer to add enemies 
-	// createSwarm();
+	swarmGroup = [];
+	// initSwarm();
+
 	game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 }
 
@@ -128,7 +121,7 @@ function iterateEnemies(number) {
 }
 
 function generateEnemies() {
-	// var type = Math.floor(Math.random() * 3);
+	type = Math.floor(Math.random() * 3);
 	if (player.alive==true) {
 		if (enemyTimer >= 2) {
 			enemyTimer = enemyTimer-0.5;
@@ -136,21 +129,17 @@ function generateEnemies() {
 		console.log(enemyTimer);
 		game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 	}
-	type = 1;
+	// type = 1;
 	if (type==0) {
-		createSwarm(); 
+		initSwarm();
 	};
 	if (type==1) {
-		for (var i=enemiesInit; i<enemiesTotal; i++) {
-			enemies.push(new enemyShooter(i, game, player, enemyBullets));
-		}
-		enemiesInit = enemiesInit + (enemiesTotal-enemiesInit);
-		enemiesTotal=enemiesInit+iterateEnemies(numEnemies);
+		initShooter();
 		type=3;
 	}
 	if (type==2) {
-		createSwarm();
-		createShooter();
+		initShooter();
+		initSwarm();
 		// movementTrigger = true;
 	}
 
@@ -276,11 +265,21 @@ function update() {
             enemies[i].update();
         }
     }
+// Checks for hit detection on the shield
     for (var i=0;i<shieldGroup.length;i++) {
 	    if (shieldGroup[i].alive) {
 			game.physics.arcade.overlap(enemyBullets, shieldGroup[i].shield, damageShield, null, this);
 	    }
 	}
+// And hit detection on the swarm group 
+	for (var i=0;i<swarmGroup.length;i++) {
+		if (swarmGroup[i].alive) {
+			game.physics.arcade.overlap(bullets, swarmGroup[i].swarm, collisionHandler, null, this);
+			game.physics.arcade.overlap(swarmGroup[i].swarm, player, eatFood, null, this);
+			swarmGroup[i].update();
+		}
+	}
+
 
 	game.physics.arcade.overlap(player,food,eatFood);
 	game.physics.arcade.overlap(enemyBullets, player, endGame, null, this);
@@ -288,10 +287,15 @@ function update() {
 }
 
 //various functions for controlling the game
-function collisionHandler(bullets, enemy) {
+function collisionHandler(swarm, bullets) {
     bullets.kill();
-    enemy.kill();
-    movementTrigger = false;
+    var damage = swarmGroup[swarm.name].damage();
+    if (damage==true) {
+    	score = score+1;
+    	scoreText.text = score;
+    }
+    // enemy.kill();
+    // movementTrigger = false;
 }
 
 function collisionHandler2(enemy, bullets) {
@@ -330,11 +334,11 @@ function killShield2(shield) {
 	shieldText.text = "Shield: Ready";
 }
 
-function eatFood(player,food) {
+function eatFood(food,player) {
 	player.health = 0;
 	healthText.text = "Health: "+player.health;
 	player.kill()
-	endText.text = end;
+	endText.text = end + "\n Ctrl+R to restart";
 	bullets.removeAll();
 };
 
@@ -344,7 +348,7 @@ function endGame(player, enemyBullets) {
 	healthText.text = "Health: "+player.health;
 	if (player.health <=0) {
 		player.kill();
-		endText.text = end;
+		endText.text = end + "\n Ctrl+R to restart";
 		bullets.removeAll();
 	}
 };

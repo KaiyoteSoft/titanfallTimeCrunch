@@ -1,3 +1,11 @@
+function initShooter() {
+	for (var i=enemiesInit; i<enemiesTotal; i++) {
+		enemies.push(new enemyShooter(i, game, player, enemyBullets));
+	}
+	enemiesInit = enemiesInit + (enemiesTotal-enemiesInit);
+	enemiesTotal=enemiesInit+iterateEnemies(numEnemies);
+}
+
 
 function createEnemyBullets() {
 //Adds the enemy weapons 
