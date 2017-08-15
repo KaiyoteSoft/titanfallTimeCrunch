@@ -18,10 +18,19 @@ function initSwarm() {
 function enemySwarm(index, game, player) {
 	this.alive = true;
 	this.health = 1;
-	var x = game.world.randomX;
-	var y = 0
+	var safeSpace;
+	var randTrigger = Math.floor(Math.random()*2);
+	// var randTrigger = 1;
+	if (randTrigger==0) {
+		safeSpace = Math.floor(Math.random() * 500)+100;
+		console.log(safeSpace);
+	}
+	if (randTrigger==1) {
+		safeSpace = Math.floor(Math.random()*-500)-100;
+		console.log(safeSpace);
+	}
 
-	this.swarm = game.add.sprite(x, y, 'food');
+	this.swarm = game.add.sprite(player.x+safeSpace, player.y+safeSpace, 'food');
 	this.swarm.anchor.set(0.5);
 	this.swarm.name = index.toString();
 	game.physics.enable(this.swarm, Phaser.Physics.ARCADE);

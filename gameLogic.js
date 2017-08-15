@@ -126,7 +126,6 @@ function generateEnemies() {
 		if (enemyTimer >= 2) {
 			enemyTimer = enemyTimer-0.5;
 		}
-		console.log(enemyTimer);
 		game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 	}
 	// type = 1;
@@ -292,7 +291,7 @@ function collisionHandler(swarm, bullets) {
     var damage = swarmGroup[swarm.name].damage();
     if (damage==true) {
     	score = score+1;
-    	scoreText.text = score;
+    	scoreText.text = "Score: "+score;
     }
     // enemy.kill();
     // movementTrigger = false;
@@ -303,7 +302,7 @@ function collisionHandler2(enemy, bullets) {
     var destroyed = enemies[enemy.name].damage();
     if (destroyed == true) {
     	score = score+1;
-    	scoreText.text = score;
+    	scoreText.text = "Score: "+score;
     }
     // enemyBullets.removeAll();
 }
