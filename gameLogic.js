@@ -57,7 +57,7 @@ var Game = {
 		game.load.image('bullet', 'asset/bullet7.png');
 		game.load.image('altBullet', 'asset/bullet5.png');
 		game.load.image('shooter', 'asset/enemy.png');
-		game.load.image('shield', 'asset/shield.png');
+		game.load.image('shield', 'asset/shield2.png');
 		game.load.image('loading', 'asset/progressBar.png');
 
 		// game.load.script('splash', 'states/splash.js');

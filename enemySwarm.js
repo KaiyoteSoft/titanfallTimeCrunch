@@ -1,5 +1,5 @@
 var swarmSpeed = 100;
-var safeDistance=100;
+var safeDistance=150;
 var rampUp = 0.5;
 
 function iterateEnemies(number) {
