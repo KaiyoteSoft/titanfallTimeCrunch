@@ -7,7 +7,12 @@ function initPlayer() {
 	//Have the player collide with the bounds of the world
 	player.body.collideWorldBounds=true;
 	player.body.allowRotation = false;
-	player.health = 10;
+	if (difficulty=="regular") {
+		player.health = 15;
+	};
+	if (difficulty=="hard") {
+		player.health=10;
+	}
 };
 
 function createBullets() {
@@ -84,4 +89,30 @@ Shield.prototype.damage = function() {
 		return true;
 	}
 	return false;
+}
+
+function damageShield(shield, enemyBullets) {
+	enemyBullets.kill();
+	var damage = shieldGroup[shield.name].damage();
+	if (damage==true) {
+		console.log("Shield destroyed");
+		shieldGroup = [];
+		shieldText.text = "Shield: Ready";
+	}
+}
+
+function killShield() {
+	for (var i=0;i<shieldGroup.length;i++) {
+		if (shieldGroup[i].alive) {
+			killShield2(shieldGroup[i].shield);
+		}
+	}
+}
+
+function killShield2(shield) {
+	for (var i=0; i<4; i++) {
+		shieldGroup[shield.name].damage();
+	}
+	shieldGroup = [];
+	shieldText.text = "Shield: Ready";
 }
