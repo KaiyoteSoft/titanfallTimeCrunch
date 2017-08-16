@@ -5,6 +5,7 @@ var Menu = {
 		game.load.image('regular', 'asset/regularButton.png');
 		game.load.image('hard', 'asset/hard.png');
 		game.load.image('instruction', 'asset/instructions.png')
+		game.load.audio('electro', 'sound/Elektronomia - Sky High NCS ReleaseQuiet.mp3');
 	},
 	create: function() {
 		this.add.sprite(0,0,'menu');

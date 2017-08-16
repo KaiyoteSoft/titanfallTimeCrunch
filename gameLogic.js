@@ -115,6 +115,9 @@ var Game = {
 		// initSwarm();
 
 		game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
+	//loads music
+		music = game.add.audio('electro');
+		music.play();
 	},
 
 //generateEnemies() and iterateEnemies() is in enemySwarm.js
@@ -232,6 +235,8 @@ var Game = {
 		player.health = player.health - 1;
 		healthText.text = "Health: "+player.health;
 		if (player.health <=0) {
+			music.pause();
+			music.mute = true;
 			player.kill();
 			endText.text = end + "\n Ctrl+R to restart";
 			bullets.removeAll();
