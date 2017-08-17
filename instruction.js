@@ -1,8 +1,6 @@
 var Instruction = {
 	preload: function() {
 		game.stage.backgroundColor = "#e6e6e6";
-		game.load.image('controls', 'asset/controlsInstruction.png');
-		game.load.image('menu', 'asset/menuButton.png');
 	},
 
 	create: function() {

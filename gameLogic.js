@@ -51,15 +51,6 @@ var score = 0;
 var Game = {
 	preload: function() {
 		game.stage.backgroundColor = "#eee";
-		game.load.image('crosshair', 'asset/crosshair.png');
-		game.load.image('player', 'asset/player.png');
-		game.load.image('food', 'asset/zombie.png');
-		game.load.image('bullet', 'asset/bullet7.png');
-		game.load.image('altBullet', 'asset/bullet5.png');
-		game.load.image('shooter', 'asset/enemy.png');
-		game.load.image('shield', 'asset/shield2.png');
-		game.load.image('loading', 'asset/progressBar.png');
-
 		// game.load.script('splash', 'states/splash.js');
 	},
 
