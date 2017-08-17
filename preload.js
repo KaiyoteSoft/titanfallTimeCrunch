@@ -1,9 +1,10 @@
 var PreloadState = {
 	preload: function() {
 //Load the progress bar
-		var loadingBar = game.add.sprite(game.world.centerX, game.world.centerY, 'loading');
+		var loadingBar = game.add.sprite(game.world.centerX, game.world.centerY+100, 'loading');
 		loadingBar.anchor.setTo(0.5);
 		game.load.setPreloadSprite(loadingBar);
+		var readyText = game.add.text(game.world.centerX, game.world.centerY, "Loading");
 
 		game.load.image('menu', 'asset/menu.png');
 		game.load.image('regular', 'asset/regularButton.png');
