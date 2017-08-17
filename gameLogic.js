@@ -227,8 +227,8 @@ var Game = {
 		player.health = player.health - 1;
 		healthText.text = "Health: "+player.health;
 		if (player.health <=0) {
-			music.pause();
 			music.mute = true;
+			// game.sound.stopAll();
 			player.kill();
 			endText.text = end + "\n Ctrl+R to restart";
 			levelText.text = "Difficulty: "+difficulty;

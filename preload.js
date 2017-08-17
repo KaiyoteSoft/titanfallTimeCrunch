@@ -4,7 +4,8 @@ var PreloadState = {
 		var loadingBar = game.add.sprite(game.world.centerX, game.world.centerY+100, 'loading');
 		loadingBar.anchor.setTo(0.5);
 		game.load.setPreloadSprite(loadingBar);
-		var readyText = game.add.text(game.world.centerX, game.world.centerY, "Loading");
+		var readyText = game.add.text(game.world.centerX, game.world.centerY, "Loading...");
+		readyText.anchor.setTo(0.5);	
 
 		game.load.image('menu', 'asset/menu.png');
 		game.load.image('regular', 'asset/regularButton.png');

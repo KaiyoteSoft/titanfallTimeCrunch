@@ -74,7 +74,10 @@ function Shield(index, game, player) {
 	game.physics.enable(this.shield, Phaser.Physics.ARCADE);
 	this.shield.body.immovable = false;
 	this.shield.body.collideWorldBounds = true;
+	this.shield.body.bounce.setTo(1,1);
 	this.shield.rotation = game.physics.arcade.angleToPointer(this.shield);
+	game.physics.arcade.velocityFromRotation(this.shield.rotation, 100, this.shield.body.velocity)
+
 	if (shieldTrigger==true) {
 		game.physics.arcade.moveToPointer(this.shield, 80);
 		shieldTrigger = false;
