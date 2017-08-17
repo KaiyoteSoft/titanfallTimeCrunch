@@ -7,10 +7,10 @@ function initPlayer() {
 	//Have the player collide with the bounds of the world
 	player.body.collideWorldBounds=true;
 	player.body.allowRotation = false;
-	if (difficulty=="regular") {
+	if (difficulty=="Regular") {
 		player.health = 15;
 	};
-	if (difficulty=="hard") {
+	if (difficulty=="Hard") {
 		player.health=10;
 	}
 };

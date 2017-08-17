@@ -93,6 +93,7 @@ var Game = {
 		shieldText = game.add.text(150, 565, "Shield: Ready");
 		healthText = game.add.text(5, 565, "Health:" + player.health);
 		endText = game.add.text(350, 300, "");
+		levelText = game.add.text(5,40, '');
 		scoreText = game.add.text(5,3, score);
 		this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
@@ -239,6 +240,7 @@ var Game = {
 			music.mute = true;
 			player.kill();
 			endText.text = end + "\n Ctrl+R to restart";
+			levelText.text = "Difficulty: "+difficulty;
 			bullets.removeAll();
 		}
 	}

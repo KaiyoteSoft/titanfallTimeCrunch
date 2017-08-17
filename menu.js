@@ -23,11 +23,11 @@ var Menu = {
 		swarmSpeed=70;
 		rampUp=0.2;
 		safeDistance=200;
-		difficulty = "regular";
+		difficulty = "Regular";
 		this.state.start('Game');
 	},
 	startHardGame: function() {
-		difficulty = "hard";
+		difficulty = "Hard";
 		this.state.start('Game');
 	},
 	startInstruction: function() {

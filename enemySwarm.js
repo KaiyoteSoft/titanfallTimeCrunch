@@ -92,6 +92,7 @@ function eatFood(food,player) {
 	healthText.text = "Health: "+player.health;
 	player.kill()
 	endText.text = end + "\n Ctrl+R to restart";
+	levelText.text = "Difficulty: "+difficulty;
 	bullets.removeAll();
 };
 
