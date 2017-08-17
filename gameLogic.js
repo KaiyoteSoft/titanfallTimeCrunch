@@ -3,6 +3,7 @@ var height = 600;
 
 
 //Create list of variables needed for the game
+var background;
 var player;
 var bullets;
 var enemyBullets;
@@ -51,6 +52,14 @@ var score = 0;
 var Game = {
 	preload: function() {
 		game.stage.backgroundColor = "#eee";
+		if (randNum==0) {
+			background = 'background';
+		}
+		if (randNum==1) {
+			background = 'background2'
+		}
+		game.add.sprite(0,0,background);
+
 		// game.load.script('splash', 'states/splash.js');
 	},
 
@@ -86,7 +95,7 @@ var Game = {
 		endText = game.add.text(350, 300, "");
 		levelText = game.add.text(5,40, '');
 		scoreText = game.add.text(5,3, score);
-		this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
+		// this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
 	//Adds the player's weapons
 		createBullets();

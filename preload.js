@@ -1,3 +1,4 @@
+var randNum;
 var PreloadState = {
 	preload: function() {
 //Load the progress bar
@@ -23,8 +24,12 @@ var PreloadState = {
 		game.load.image('altBullet', 'asset/bullet5.png');
 		game.load.image('shooter', 'asset/enemy.png');
 		game.load.image('shield', 'asset/shield2.png');
+		game.load.image('background','asset/background.jpg');
+		game.load.image('background2', 'asset/background2.jpg');
 	},
 	create: function() {
+		randNum = Math.floor(Math.random() * 2);
 		game.state.start('Menu');
+
 	}
 };
