@@ -12,7 +12,7 @@ var PreloadState = {
 		game.load.audio('electro', 'sound/Elektronomia - Sky High NCS ReleaseQuiet.mp3');
 
 		game.load.image('controls', 'asset/controlsInstruction.png');
-		game.load.image('menu', 'asset/menuButton.png');
+		game.load.image('menuButton', 'asset/menuButton.png');
 
 		game.load.image('crosshair', 'asset/crosshair.png');
 		game.load.image('player', 'asset/player.png');

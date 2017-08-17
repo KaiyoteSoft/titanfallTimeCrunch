@@ -5,7 +5,7 @@ var Instruction = {
 
 	create: function() {
 		this.add.sprite(100,50,'controls');
-		this.add.button(600,510,'menu',this.startMenu, this);
+		this.add.button(600,510,'menuButton',this.startMenu, this);
 		// var instructionText = game.add.text(350,300,"Hello world");
 	},
 	startMenu: function() {
