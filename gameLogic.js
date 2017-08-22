@@ -51,23 +51,34 @@ var score = 0;
 
 var Game = {
 	preload: function() {
-		game.stage.backgroundColor = "#eee";
 		if (randNum==0) {
-			background = 'background';
+			background = '#FFC2C2';
 		}
 		if (randNum==1) {
-			background = 'background2'
+			background = '#FFFFC3';
 		}
-		game.add.sprite(0,0,background);
+		if (randNum==2) {
+			background = '#F5C3FF';
+		}
+		if (randNum==3) {
+			background = '#C3D2FF';
+		}
+		if (randNum==4) {
+			background = '#C3F5FF';
+		}
+		if (randNum==5) {
+			background = '#C6FFC3';
+		}
+		if (randNum==6) {
+			background = '#FFC3F5';
+		}
+		game.stage.backgroundColor = background;
 
-		// game.load.script('splash', 'states/splash.js');
+		// game.add.sprite(0,0,background);
+
 	},
 
 	create: function() {
-	//Add the different game states
-		// game.state.add("splash", splash);
-		// game.state.start("splash");
-
 		space = game.input.keyboard.addKey([Phaser.Keyboard.
 			SPACEBAR]);
 		shift = game.input.keyboard.addKey([Phaser.Keyboard.
@@ -95,6 +106,7 @@ var Game = {
 		endText = game.add.text(350, 300, "");
 		levelText = game.add.text(5,40, '');
 		scoreText = game.add.text(5,3, score);
+		difficultyText = game.add.text(650,3,'');
 		// this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
 	//Adds the player's weapons
@@ -113,12 +125,17 @@ var Game = {
 
 	//Start the timer to add enemies 
 		swarmGroup = [];
+		// swarmTotal = iterateEnemies(numEnemies);
 		// initSwarm();
 
 		game.time.events.add(Phaser.Timer.SECOND*enemyTimer, generateEnemies);
 	//loads music
 		music = game.add.audio('electro');
 		music.play();
+
+		if (difficulty=='Regular') {
+			game.time.events.add(Phaser.Timer.SECOND*40, increaseDifficulty);
+		}
 	},
 
 //generateEnemies() and iterateEnemies() is in enemySwarm.js
@@ -165,8 +182,14 @@ var Game = {
 
 	//fires if the space bar is pressed
 		if (space.isDown && bulletTrigger==true) {
-			fire();
+			if (titan=='ronin' && speedTrigger==true) {
+				fire();
+			};
+			if (titan=='tone') {
+				fire();
+			}
 			bulletTrigger = false;
+
 		}
 		else if (space.isUp) {
 			bulletTrigger = true;
@@ -176,13 +199,13 @@ var Game = {
 		}
 
 	//adds shield if shift is pressed
+	if (titan=="tone") {
 		if (shift.isDown && speedTrigger==true && shieldGroup.length == 0) {
 			for (i=0;i<1;i++) {
 				shieldGroup.push(new Shield(i, game, player))
 				game.time.events.add(Phaser.Timer.SECOND*shieldTimer, killShield);
 
 			}
-		
 			shieldText.text = "Shield: Deployed";
 			speedTrigger = false;
 		}
@@ -193,10 +216,26 @@ var Game = {
 		else {
 			//placeholder
 		}
-		
-		if (typeof food !== "undefined") {
-			descend(player.x, player.y);
-		};
+	};
+//adds block around player if titan is ronin
+	if (titan=="ronin") {
+		if (shift.isDown && speedTrigger==true && shieldGroup.length==0) {
+			for (var i=0;i<1;i++) {
+				shieldGroup.push(new Shield(i, game, player));
+			}
+			speed=130;
+			shieldText.text = "Barrier: Deployed";
+			speedTrigger=false;
+		}
+		else if (shift.isUp) {
+			shieldText.text = "Barrier: Ready";
+			speedTrigger = true;
+			speed = 175;
+			killShield();
+		}
+		else {}
+	};		
+
 
 	//check if the shooter group is alive 
 	    for (var i = 0; i < enemies.length; i++)
@@ -212,6 +251,9 @@ var Game = {
 	    for (var i=0;i<shieldGroup.length;i++) {
 		    if (shieldGroup[i].alive) {
 				game.physics.arcade.overlap(enemyBullets, shieldGroup[i].shield, damageShield, null, this);
+				if (titan=='ronin') {
+					shieldGroup[i].update();
+				};
 		    }
 		}
 	// And hit detection on the swarm group 
@@ -224,9 +266,7 @@ var Game = {
 		}
 
 
-		game.physics.arcade.overlap(player,food,eatFood);
 		game.physics.arcade.overlap(enemyBullets, player, this.endGame, null, this);
-	    game.physics.arcade.overlap(bullets, food, collisionHandler, null, this);
 	},
 
 	//various functions for controlling the game

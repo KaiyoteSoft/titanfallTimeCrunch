@@ -1,4 +1,5 @@
 var difficulty;
+var titan;
 var Menu = {
 	preload: function() {
 	},
@@ -9,7 +10,7 @@ var Menu = {
 		this.add.button(310,480,'instruction', this.startInstruction, this)
 	},
 	startEasyGame: function() {
-		playerFireRate = 200;
+		playerFireRate = playerFireRate-100;
 		numEnemies=2;
 		enemyTimer = 8;
 		enemyFireRate = 4000;
@@ -18,11 +19,11 @@ var Menu = {
 		rampUp=0.2;
 		safeDistance=200;
 		difficulty = "Regular";
-		this.state.start('Game');
+		this.state.start('SelectTitan');
 	},
 	startHardGame: function() {
 		difficulty = "Hard";
-		this.state.start('Game');
+		this.state.start('SelectTitan');
 	},
 	startInstruction: function() {
 	this.state.start('Instruction');

@@ -16,19 +16,21 @@ var PreloadState = {
 
 		game.load.image('controls', 'asset/controlsInstruction.png');
 		game.load.image('menuButton', 'asset/menuButton.png');
+		game.load.image('toneCard', 'asset/toneCard.png');
+		game.load.image('roninCard', 'asset/roninCard.png');
 
 		game.load.image('crosshair', 'asset/crosshair.png');
-		game.load.image('player', 'asset/player.png');
+		game.load.image('tone', 'asset/player.png');
+		game.load.image('ronin', 'asset/player2.png');
 		game.load.image('food', 'asset/zombie.png');
 		game.load.image('bullet', 'asset/bullet7.png');
 		game.load.image('altBullet', 'asset/bullet5.png');
 		game.load.image('shooter', 'asset/enemy.png');
 		game.load.image('shield', 'asset/shield2.png');
-		game.load.image('background','asset/background.jpg');
-		game.load.image('background2', 'asset/background2.jpg');
+		game.load.image('block', 'asset/block.png');
 	},
 	create: function() {
-		randNum = Math.floor(Math.random() * 2);
+		randNum = Math.floor(Math.random() * 7);
 		game.state.start('Menu');
 
 	}

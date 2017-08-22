@@ -47,16 +47,17 @@ function enemySwarm(index, game, player) {
 	// var randTrigger = 1;
 	if (randTrigger==0) {
 		safeSpace = Math.floor(Math.random() * 500)+safeDistance;
-		console.log(safeSpace);
+		// console.log(safeSpace);
 	}
 	if (randTrigger==1) {
 		safeSpace = Math.floor(Math.random()*-500)-safeDistance;
-		console.log(safeSpace);
+		// console.log(safeSpace);
 	}
 
 	this.swarm = game.add.sprite(player.x+safeSpace, player.y+safeSpace, 'food');
 	this.swarm.anchor.set(0.5);
 	this.swarm.name = index.toString();
+	// console.log(this.swarm.name);
 	game.physics.enable(this.swarm, Phaser.Physics.ARCADE);
 	this.swarm.body.immovable = false;
 	this.swarm.body.collideWorldBounds = true;
@@ -78,8 +79,8 @@ enemySwarm.prototype.update = function() {
 
 function collisionHandler(swarm, bullets) {
     bullets.kill();
-    var damage = swarmGroup[swarm.name].damage();
-    if (damage==true) {
+    var destroyed = swarmGroup[swarm.name].damage();
+    if (destroyed==true) {
     	score = score+1;
     	scoreText.text = "Score: "+score;
     }

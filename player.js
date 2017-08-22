@@ -1,5 +1,5 @@
 function initPlayer() {
-	player = game.add.sprite(width*0.5, height*0.5, 'player');
+	player = game.add.sprite(width*0.5, height*0.5, titan);
 	//set the anchor point in the center of the sprite
 	player.anchor.set(0.5);
 	//Enable physics for the player body
@@ -63,59 +63,4 @@ function fire() {
     }
 }
 
-function Shield(index, game, player) {
-	var shieldTrigger = true;
-	this.alive = true;
-	this.health = 4;
-	
-	this.shield = game.add.sprite(player.x, player.y, 'shield');
-	this.shield.anchor.set(0.5);
-	this.shield.name = index.toString();
-	game.physics.enable(this.shield, Phaser.Physics.ARCADE);
-	this.shield.body.immovable = false;
-	this.shield.body.collideWorldBounds = true;
-	this.shield.body.bounce.setTo(1,1);
-	this.shield.rotation = game.physics.arcade.angleToPointer(this.shield);
-	game.physics.arcade.velocityFromRotation(this.shield.rotation, 100, this.shield.body.velocity)
 
-	if (shieldTrigger==true) {
-		game.physics.arcade.moveToPointer(this.shield, 80);
-		shieldTrigger = false;
-	}
-}
-
-Shield.prototype.damage = function() {
-	this.health -= 1;
-	if (this.health<=0) {
-		this.alive=false;
-		this.shield.kill();
-		return true;
-	}
-	return false;
-}
-
-function damageShield(shield, enemyBullets) {
-	enemyBullets.kill();
-	var damage = shieldGroup[shield.name].damage();
-	if (damage==true) {
-		console.log("Shield destroyed");
-		shieldGroup = [];
-		shieldText.text = "Shield: Ready";
-	}
-}
-
-function killShield() {
-	for (var i=0;i<shieldGroup.length;i++) {
-		if (shieldGroup[i].alive) {
-			killShield2(shieldGroup[i].shield);
-		}
-	}
-}
-
-function killShield2(shield) {
-	for (var i=0; i<4; i++) {
-		shieldGroup[shield.name].damage();
-	}
-	shieldGroup = [];
-	shieldText.text = "Shield: Ready";
-}

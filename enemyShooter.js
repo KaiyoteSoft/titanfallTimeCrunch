@@ -1,6 +1,13 @@
 var enemyFireRate = 2500;
 var enemyBulletSpeed = 200;
 
+function increaseDifficulty() {
+	enemyFireRate = 3000;
+	enemyBulletSpeed = 150;
+	swarmSpeed = 85;
+	difficultyText.text="Level Two";
+}
+
 function initShooter() {
 	for (var i=enemiesInit; i<enemiesTotal; i++) {
 		enemies.push(new enemyShooter(i, game, player, enemyBullets));
@@ -36,6 +43,7 @@ function enemyShooter(index, game, player, enemyBullets) {
 	this.enemy = game.add.sprite(x,y,'shooter');
 	this.enemy.anchor.set(0.5);
 	this.enemy.name = index.toString();
+	// console.log(this.enemy.name);
 	game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
 	this.enemy.body.immovable = false;
 	this.enemy.body.collideWorldBounds=true;
