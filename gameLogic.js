@@ -1,6 +1,6 @@
 var width = 800;
 var height = 600;
-
+// var name; 
 
 //Create list of variables needed for the game
 var background;
@@ -79,6 +79,22 @@ var Game = {
 	},
 
 	create: function() {
+		// localStorage.setItem("hardHighScore", 0);
+		if (difficulty=="Regular") {
+			var highScore = localStorage.getItem('regularHighScore');
+			var highName = localStorage.getItem('nameRegular');
+		}
+		if (difficulty=="Hard") {
+			var highScore = localStorage.getItem('hardHighScore');
+			var highName = localStorage.getItem('nameHard');
+		}
+		if (highScore==null) {
+			highScore = 0;
+		}
+		if (highName==null) {
+			highName = "Anon";
+		}
+
 		space = game.input.keyboard.addKey([Phaser.Keyboard.
 			SPACEBAR]);
 		shift = game.input.keyboard.addKey([Phaser.Keyboard.
@@ -107,6 +123,8 @@ var Game = {
 		levelText = game.add.text(5,40, '');
 		scoreText = game.add.text(5,3, score);
 		difficultyText = game.add.text(650,3,'');
+		highScoreText = game.add.text(game.world.centerX, 23, 'High Score ('+highName+': '+highScore+')');
+		highScoreText.anchor.setTo(0.5)
 		// this.game.scale.pageAlignHorizontally = true;this.game.scale.pageAlignVertically = true;this.game.scale.refresh();
 
 	//Adds the player's weapons
@@ -282,8 +300,35 @@ var Game = {
 			endText.text = end + "\n Ctrl+R to restart";
 			levelText.text = "Difficulty: "+difficulty;
 			bullets.removeAll();
+			if (difficulty=="Hard") {
+				var highScore = parseInt(localStorage.getItem("hardHighScore"));
+				if (score > highScore) {
+					setScore('hard');
+				}
+			}
+			if (difficulty=="Regular") {
+				var highScore = parseInt(localStorage.getItem("regularHighScore"));
+				if (score > highScore) {
+					setScore('regular');
+				}
+			}
 		}
 	}
-
 };
 
+function setScore(level) {
+	var name = prompt("You have a new high score! Please enter a name:", "");
+	if (name==null || name =="") {
+		name='Anon';
+	}
+	else {
+		if (level=="hard") {
+			localStorage.setItem("nameHard", name);
+			localStorage.setItem("hardHighScore", score);
+		};
+		if (level=="regular") {
+			localStorage.setItem("nameRegular", name);
+			localStorage.setItem("regularHighScore", score);
+		};
+	}
+}

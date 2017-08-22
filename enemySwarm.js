@@ -97,6 +97,18 @@ function eatFood(food,player) {
 	endText.text = end + "\n Ctrl+R to restart";
 	levelText.text = "Difficulty: "+difficulty;
 	bullets.removeAll();
+	if (difficulty=="Hard") {
+		var highScore = parseInt(localStorage.getItem("hardHighScore"));
+		if (score > highScore) {
+			setScore('hard');
+		}
+	}
+	if (difficulty=="Regular") {
+		var highScore = parseInt(localStorage.getItem("regularHighScore"));
+		if (score > highScore) {
+			setScore('regular');
+		}
+	}
 };
 
 

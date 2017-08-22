@@ -15,7 +15,7 @@ function Shield(index, game, player) {
 	this.shield = game.add.sprite(player.x, player.y, typeDefense);
 	this.shield.anchor.set(0.5);
 	this.shield.name = index.toString();
-	console.log(this.shield.name);
+	// console.log(this.shield.name);
 	game.physics.enable(this.shield, Phaser.Physics.ARCADE);
 	this.shield.body.immovable = false;
 	this.shield.body.collideWorldBounds = true;
