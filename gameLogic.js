@@ -83,16 +83,22 @@ var Game = {
 		if (difficulty=="Regular") {
 			var highScore = localStorage.getItem('regularHighScore');
 			var highName = localStorage.getItem('nameRegular');
+			if (highScore==null) {
+				localStorage.setItem('regularHighScore',0);
+			}
+			if (highName==null) {
+				localStorage.setItem('nameRegular','Anon');
+			}
 		}
 		if (difficulty=="Hard") {
 			var highScore = localStorage.getItem('hardHighScore');
 			var highName = localStorage.getItem('nameHard');
-		}
-		if (highScore==null) {
-			highScore = 0;
-		}
-		if (highName==null) {
-			highName = "Anon";
+			if (highScore==null) {
+				localStorage.setItem('hardHighScore',0);
+			}
+			if (highName==null) {
+				localStorage.setItem('nameHard','Anon');
+			}
 		}
 
 		space = game.input.keyboard.addKey([Phaser.Keyboard.
