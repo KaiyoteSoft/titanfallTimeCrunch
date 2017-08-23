@@ -3,7 +3,7 @@ var SelectTitan = {
 
 	},
 	create: function() {
-		var fontStyle = { font:"40px Courier", align:"center"};
+		var fontStyle = { font:"40px", align:"center"};
 		game.stage.backgroundColor = "#eee";
 		var titanText = game.add.text(game.world.centerX, 50, "Select Titan:", fontStyle);
 		titanText.anchor.setTo(0.5);
