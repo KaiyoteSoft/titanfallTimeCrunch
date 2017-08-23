@@ -60,6 +60,7 @@ function fire() {
         bullet.reset(player.x - 8, player.y - 8);
 
 		bullet.rotation = game.physics.arcade.moveToPointer(bullet, bulletSpeed);
+
     }
 }
 
