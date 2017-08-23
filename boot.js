@@ -9,6 +9,8 @@ var BootState = {
 	},
 	create: function() {
 		game.stage.backgroundColor = '#fff';
+		var bootingText = game.add.text(game.world.centerX, game.world.centerY, 'Booting...');
+		bootingText.anchor.setTo(0.5);
 		game.state.start('PreloadState', PreloadState);
 	}
 };

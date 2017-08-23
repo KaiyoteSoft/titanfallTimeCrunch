@@ -326,6 +326,14 @@ function setScore(level) {
 	var name = prompt("You have a new high score! Please enter a name:", "");
 	if (name==null || name =="") {
 		name='Anon';
+		if (level=="hard") {
+			localStorage.setItem("nameHard", name);
+			localStorage.setItem("hardHighScore", score);
+		};
+		if (level=="regular") {
+			localStorage.setItem("nameRegular", name);
+			localStorage.setItem("regularHighScore", score);
+		};
 	}
 	else {
 		if (level=="hard") {

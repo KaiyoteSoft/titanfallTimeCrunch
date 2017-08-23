@@ -3,8 +3,9 @@ var SelectTitan = {
 
 	},
 	create: function() {
+		var fontStyle = { font:"40px", align:"center"};
 		game.stage.backgroundColor = "#eee";
-		var titanText = game.add.text(game.world.centerX, 50, "Select Titan:");
+		var titanText = game.add.text(game.world.centerX, 50, "Select Titan:", fontStyle);
 		titanText.anchor.setTo(0.5);
 		this.add.button(100,100, 'toneCard', this.selectTone, this);
 		this.add.button(450,100, 'roninCard', this.selectRonin, this);
