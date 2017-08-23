@@ -14,7 +14,7 @@ var PreloadState = {
 		game.load.image('instruction', 'asset/instructions.png')
 		game.load.audio('electro', 'sound/Elektronomia - Sky High NCS ReleaseQuiet.mp3');
 
-		game.load.image('controls', 'asset/controlsInstruction.png');
+		game.load.image('controls', 'asset/controlsInstruction2.jpg');
 		game.load.image('menuButton', 'asset/menuButton.png');
 		game.load.image('toneCard', 'asset/toneCard.png');
 		game.load.image('roninCard', 'asset/roninCard.png');
