@@ -43,10 +43,10 @@ var PreloadState = {
 		game.load.image('crosshair', 'asset/crosshair.png');
 		game.load.image('tone', 'asset/player.png');
 		game.load.image('ronin', 'asset/player2.png');
-		game.load.image('food', 'asset/zombie.png');
+		game.load.image('food', 'asset/zombie2.png');
 		game.load.image('bullet', 'asset/bullet7.png');
 		game.load.image('altBullet', 'asset/bullet5.png');
-		game.load.image('shooter', 'asset/enemy.png');
+		game.load.image('shooter', 'asset/enemy2.png');
 		game.load.image('shield', 'asset/shield2.png');
 		game.load.image('block', 'asset/block.png');
 	},
