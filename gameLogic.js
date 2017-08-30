@@ -51,30 +51,16 @@ var score = 0;
 
 var Game = {
 	preload: function() {
+		game.stage.backgroundColor = '#eee';
+
 		if (randNum==0) {
-			background = '#FFC2C2';
+			background = 'background';
 		}
 		if (randNum==1) {
-			background = '#FFFFC3';
+			background = 'background2';
 		}
-		if (randNum==2) {
-			background = '#F5C3FF';
-		}
-		if (randNum==3) {
-			background = '#C3D2FF';
-		}
-		if (randNum==4) {
-			background = '#C3F5FF';
-		}
-		if (randNum==5) {
-			background = '#C6FFC3';
-		}
-		if (randNum==6) {
-			background = '#FFC3F5';
-		}
-		game.stage.backgroundColor = background;
 
-		// game.add.sprite(0,0,background);
+		game.add.sprite(0,0,background);
 
 	},
 

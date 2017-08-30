@@ -36,7 +36,7 @@ function enemyShooter(index, game, player, enemyBullets) {
 	var y = game.world.randomY;
 	dangerBullets = enemyBullets;
 	// this.fireRate = 2000;
-	this.nextFire = 0;
+	this.nextFire = game.time.now+1000;
 	this.alive = true;
 	this.health = 1;
 

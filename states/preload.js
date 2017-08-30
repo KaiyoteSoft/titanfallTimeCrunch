@@ -40,6 +40,9 @@ var PreloadState = {
 		game.load.image('toneCard', 'asset/toneCard.png');
 		game.load.image('roninCard', 'asset/roninCard.png');
 
+		game.load.image('background', 'asset/background.jpg');
+		game.load.image('background2', 'asset/background2.jpg');
+
 		game.load.image('crosshair', 'asset/crosshair.png');
 		game.load.image('tone', 'asset/player.png');
 		game.load.image('ronin', 'asset/player2.png');
@@ -51,7 +54,7 @@ var PreloadState = {
 		game.load.image('block', 'asset/block.png');
 	},
 	create: function() {
-		randNum = Math.floor(Math.random() * 7);
+		randNum = Math.floor(Math.random() * 2);
 
 		// game.stage.backgroundColor = '#ebebeb';
 

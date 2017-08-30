@@ -9,6 +9,7 @@ function iterateEnemies(number) {
 
 function generateEnemies() {
 	type = Math.floor(Math.random() * 3);
+	// type = 1;
 	if (player.alive==true) {
 		if (enemyTimer >= 2) {
 			enemyTimer = enemyTimer-0.5;
