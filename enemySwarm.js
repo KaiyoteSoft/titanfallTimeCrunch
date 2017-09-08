@@ -78,12 +78,12 @@ function enemySwarm(index, game, player) {
 		safeSpace3 = safeSpace+safeDistance;
 	}
 
-	if (safeSpace3 < 150 && safeSpace3 > 0) {
-		console.log('X Position: ' + safeSpace3);
-	}
-	if (safeSpace3 > -150 && safeSpace3 < 0) {
-		console.log('X position: ' + safeSpace3);
-	}
+	// if (safeSpace3 < 150 && safeSpace3 > 0) {
+	// 	console.log('X Position: ' + safeSpace3);
+	// }
+	// if (safeSpace3 > -150 && safeSpace3 < 0) {
+	// 	console.log('X position: ' + safeSpace3);
+	// }
 
 	safeSpace2 = Math.floor(Math.random()*maxDistance2);
 	if (safeSpace2>=0) {
@@ -95,19 +95,19 @@ function enemySwarm(index, game, player) {
 		safeSpace4 = safeSpace2+safeDistance2;
 	}
 
-	if (safeSpace4 < 150 && safeSpace4 > 0) {
-		console.log('Y position: ' + safeSpace4);
-	}
-	if (safeSpace4 > -150 && safeSpace4 < 0) {
-		console.log('Y position: ' + safeSpace4);
-	}
+	// if (safeSpace4 < 150 && safeSpace4 > 0) {
+	// 	console.log('Y position: ' + safeSpace4);
+	// }
+	// if (safeSpace4 > -150 && safeSpace4 < 0) {
+	// 	console.log('Y position: ' + safeSpace4);
+	// }
 
 	// if (randTrigger==1) {
 	// 	safeSpace = Math.floor(Math.random()*-500)-safeDistance;
 	// 	// console.log(safeSpace);
 	// }
 
-	this.swarm = game.add.sprite(player.x+safeSpace, player.y+safeSpace2, 'food');
+	this.swarm = game.add.sprite(player.x+safeSpace3, player.y+safeSpace4, 'food');
 	this.swarm.anchor.set(0.5);
 	this.swarm.name = index.toString();
 	// console.log(this.swarm.name);
