@@ -50,7 +50,7 @@ Shield.prototype.update = function() {
 function damageShield(shield, enemyBullets) {
 	enemyBullets.kill();
 	var destroyed = shieldGroup[shield.name].damage();
-	if (titan=='ronin' && player.health>=1.1) {
+	if (titan=='ronin' && player.health>=1.1 ) {
 		player.health = player.health-0.1;
 		player.health = Math.round(player.health * 10)/10;
 		healthText.text = "Health: "+player.health;
